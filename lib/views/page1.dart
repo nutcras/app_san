@@ -1,33 +1,33 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_appcare/configs/config.dart';
 import 'package:flutter_appcare/views/carddetail.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/sidemenu.dart';
 
 class Page1 extends StatefulWidget {
-  Page1({Key? key, data}) : super(key: key);
+  const Page1({Key? key, data}) : super(key: key);
 
   @override
   State<Page1> createState() => _Page1State();
 }
 
 class _Page1State extends State<Page1> {
-  @override
   dynamic data;
 
+  @override
   void initState() {
     super.initState();
     startApi();
   }
 
   startApi() async {
-    var item = await Getdata();
-
+    final prefs =
+        await SharedPreferences.getInstance(); //เพิ่มตัวแชร์จากหน้าlogin
+    int? idUser = prefs.getInt('idm');
+    var item = await getdata(idUser);
     print(item?.first);
-
     setState(() {
       data = item;
     });
@@ -38,7 +38,7 @@ class _Page1State extends State<Page1> {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 227, 227, 227),
       appBar: AppBar(
-        title: Text('หน้าหลัก'),
+        title: Text('รับงาน'),
         backgroundColor: Color.fromARGB(255, 160, 42, 207),
       ),
       body: SizedBox(
@@ -81,19 +81,19 @@ class _Page1State extends State<Page1> {
                                 // color: Color.fromARGB(255, 150, 217, 234),
                                 // ignore: prefer_const_constructors
                                 child: CircleAvatar(
-                                    backgroundColor:
-                                        Color.fromARGB(255, 211, 211, 211),
-                                    foregroundColor:
-                                        Color.fromARGB(255, 211, 211, 211),
-                                    // ignore: prefer_const_constructors
-                                    // backgroundImage:
-                                    //     AssetImage('assets/image/$i.jpeg'),
+                                  backgroundColor:
+                                      Color.fromARGB(255, 211, 211, 211),
+                                  foregroundColor:
+                                      Color.fromARGB(255, 211, 211, 211),
+                                  // ignore: prefer_const_constructors
+                                  // backgroundImage:
+                                  //     AssetImage('assets/image/$i.jpeg'),
 
-                                    // backgroundImage:
-                                    //     NetworkImage('${data[i]['image']}'),
-                                    // backgroundImage: NetworkImage(
-                                    //     "https://obs.line-scdn.net/0ho7Hx9FjJMBh1ARpkc9xPT09XM3dGbSMbETdhGylvbiwKMSRPGm4vLVlVO3oNOXdGG297dlEAKylQNXFMSmEv/w644"),
-                                    ),
+                                  // backgroundImage:
+                                  //     NetworkImage('${data[i]['image']}'),
+                                  // backgroundImage: NetworkImage(
+                                  //     "https://obs.line-scdn.net/0ho7Hx9FjJMBh1ARpkc9xPT09XM3dGbSMbETdhGylvbiwKMSRPGm4vLVlVO3oNOXdGG297dlEAKylQNXFMSmEv/w644"),
+                                ),
                               ),
                               SizedBox(
                                 width: 10,
@@ -134,9 +134,9 @@ class _Page1State extends State<Page1> {
   }
 }
 
-Future<dynamic> Getdata() async {
-  Uri url = Uri.parse('http://165.22.63.114:3200/api/mentor'); //server
-  // Uri url = Uri.parse('http://192.168.1.9:3200/api/mentor');          //เครื่องกุ
+Future<dynamic> getdata(dynamic idUser) async {
+  Uri url = Uri.parse(
+      'http://206.189.92.71:3200/api/booking/men/71/$idUser'); //server
   return await http
       .get(
     url,

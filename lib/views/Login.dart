@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ElevatedButton(
                             onPressed: () async {
                               print('เข้าสู่ระบบ');
-                              await CheckLogin(
+                              await checkLogin(
                                   username.text, password.text, context);
                               // Navigator.pushNamedAndRemoveUntil(context,
                               //     "/Page1", (Route<dynamic> route) => false);
@@ -206,11 +206,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-Future CheckLogin(String username, String password, context) async {
+Future checkLogin(String username, String password, context) async {
   EasyLoading.show(status: 'loading...');
 
-  Uri url = Uri.parse('http://165.22.63.114:3200/api/customer/login');
-  // Uri url = Uri.parse('http://192.168.1.9:3200/api/customer/login');
+  Uri url = Uri.parse('http://206.189.92.71:3200/api/mentor/login');
   http
       .post(
     url,
@@ -222,13 +221,14 @@ Future CheckLogin(String username, String password, context) async {
       final prefs = await SharedPreferences.getInstance();
       var data = jsonDecode(req.body);
       prefs.setString('token', data['token']);
-      prefs.setInt('idm', data['idc']);
+      prefs.setInt('idm', data['idm']);
       headers?['Authorization'] = "bearer ${data['token']}";
       EasyLoading.showSuccess('Great Success!');
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => Page1()),
           (Route<dynamic> route) => false);
     } else {
+      print(req.statusCode);
       print('error');
       EasyLoading.showError('Failed with Error');
     }
